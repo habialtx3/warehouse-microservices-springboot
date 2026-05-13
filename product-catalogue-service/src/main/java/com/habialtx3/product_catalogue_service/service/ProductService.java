@@ -3,6 +3,7 @@ package com.habialtx3.product_catalogue_service.service;
 import com.habialtx3.product_catalogue_service.entity.Product;
 import com.habialtx3.product_catalogue_service.model.CreateProductRequest;
 import com.habialtx3.product_catalogue_service.model.ProductResponse;
+import com.habialtx3.product_catalogue_service.model.UpdateProductRequest;
 import com.habialtx3.product_catalogue_service.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -72,5 +74,39 @@ public class ProductService {
         return toProductResponse(products);
     }
 
+    @Transactional
+    public ProductResponse update(UpdateProductRequest request, String id) {
+
+        validation.validate(request);
+
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found")
+        );
+
+        if(Objects.nonNull(request.getName())){
+            product.setName(request.getName());
+        }
+
+
+        if(Objects.nonNull(request.getDescription())){
+            product.setDescription(request.getDescription());
+        }
+
+
+        if(Objects.nonNull(request.getPrice())){
+            product.setPrice(request.getPrice());
+        }
+
+
+        if(Objects.nonNull(request.getCategoryId())){
+            product.setCategoryId(request.getCategoryId());
+        }
+
+
+        productRepository.save(product);
+
+        return toProductResponse(product);
+
+    }
 
 }
