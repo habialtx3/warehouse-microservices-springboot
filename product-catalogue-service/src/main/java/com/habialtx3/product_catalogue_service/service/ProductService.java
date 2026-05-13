@@ -5,8 +5,10 @@ import com.habialtx3.product_catalogue_service.model.CreateProductRequest;
 import com.habialtx3.product_catalogue_service.model.ProductResponse;
 import com.habialtx3.product_catalogue_service.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +52,7 @@ public class ProductService {
                 .build();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
 
         List<Product> products = productRepository.findAll();
@@ -59,5 +61,16 @@ public class ProductService {
                 .map(product -> toProductResponse(product)).toList();
 
     }
+
+    @Transactional(readOnly = true)
+    public ProductResponse get(String id) {
+
+        Product products = productRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found")
+        );
+
+        return toProductResponse(products);
+    }
+
 
 }

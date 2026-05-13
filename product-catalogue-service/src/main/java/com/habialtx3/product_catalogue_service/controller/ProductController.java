@@ -45,4 +45,15 @@ public class ProductController {
                 .data(responses)
                 .build();
     }
+
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    WebResponse<ProductResponse> get(@PathVariable String id) {
+        ProductResponse response = productService.get(id);
+        return WebResponse.<ProductResponse>builder()
+                .data(response)
+                .build();
+    }
 }
