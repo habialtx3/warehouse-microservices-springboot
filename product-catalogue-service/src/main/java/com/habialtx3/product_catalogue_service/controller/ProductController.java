@@ -3,6 +3,7 @@ package com.habialtx3.product_catalogue_service.controller;
 import com.habialtx3.product_catalogue_service.entity.Product;
 import com.habialtx3.product_catalogue_service.model.CreateProductRequest;
 import com.habialtx3.product_catalogue_service.model.ProductResponse;
+import com.habialtx3.product_catalogue_service.model.UpdateProductRequest;
 import com.habialtx3.product_catalogue_service.model.WebResponse;
 import com.habialtx3.product_catalogue_service.repository.ProductRepository;
 import com.habialtx3.product_catalogue_service.service.ProductService;
@@ -41,8 +42,45 @@ public class ProductController {
     )
     WebResponse<List<ProductResponse>> list() {
         List<ProductResponse> responses = productService.list();
-        return  WebResponse.<List<ProductResponse>>builder()
+        return WebResponse.<List<ProductResponse>>builder()
                 .data(responses)
                 .build();
     }
+
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    WebResponse<ProductResponse> get(@PathVariable String id) {
+        ProductResponse response = productService.get(id);
+        return WebResponse.<ProductResponse>builder()
+                .data(response)
+                .build();
+    }
+
+    @PutMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    WebResponse<ProductResponse> update(@PathVariable String id, @RequestBody UpdateProductRequest request) {
+        ProductResponse response = productService.update(request, id);
+        return WebResponse.<ProductResponse>builder()
+                .data(response)
+                .build();
+    }
+
+
+    @DeleteMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    WebResponse<String> delete(@PathVariable String id) {
+        productService.remove(id);
+        return WebResponse.<String>builder()
+                .data("Product has been deleted")
+                .build();
+    }
+
+
 }
