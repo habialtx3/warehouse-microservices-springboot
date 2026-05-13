@@ -109,4 +109,10 @@ public class ProductService {
 
     }
 
+    public void remove(String id) {
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found")
+        );
+        productRepository.deleteById(id);
+    }
 }

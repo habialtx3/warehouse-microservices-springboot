@@ -71,4 +71,16 @@ public class ProductController {
     }
 
 
+    @DeleteMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    WebResponse<String> delete(@PathVariable String id) {
+        productService.remove(id);
+        return WebResponse.<String>builder()
+                .data("Product has been deleted")
+                .build();
+    }
+
+
 }
