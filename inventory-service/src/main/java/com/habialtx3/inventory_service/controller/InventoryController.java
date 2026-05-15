@@ -38,4 +38,29 @@ public class InventoryController {
                 .data(responses)
                 .build();
     }
+
+
+    @GetMapping(
+            path = "/{inventoryId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<InventoryResponse> getById(@PathVariable String inventoryId) {
+       InventoryResponse response = inventoryService.getById(inventoryId);
+        return WebResponse.<InventoryResponse>builder()
+                .data(response)
+                .build();
+    }
+
+    @GetMapping(
+            path = "/product/{productId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<InventoryResponse>> getByProductId(@PathVariable String productId) {
+        List<InventoryResponse> responses = inventoryService.getByProductId(productId);
+        return WebResponse.<List<InventoryResponse>>builder()
+                .data(responses)
+                .build();
+    }
+
+
 }

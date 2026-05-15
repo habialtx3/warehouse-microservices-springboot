@@ -5,8 +5,10 @@ import com.habialtx3.inventory_service.model.CreateInventoryRequest;
 import com.habialtx3.inventory_service.model.InventoryResponse;
 import com.habialtx3.inventory_service.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -45,4 +47,25 @@ public class InventoryService {
     }
 
     @Transactional(readOnly = true)
+    public InventoryResponse getById(String id) {
+        Inventory inventory = inventoryRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory id not found")
+        );
+
+        return toInventoryResponse(inventory);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<InventoryResponse> getByProductId(String id) {
+        List<Inventory> inventories = inventoryRepository.findAllByProductId(id);
+
+        if (inventories.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Inventory from Product " + id + " is not found"
+            );
+        }
+        return inventories.stream().map(inventory -> toInventoryResponse(inventory)).toList();
+    }
 }
