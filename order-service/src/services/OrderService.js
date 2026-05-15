@@ -1,22 +1,54 @@
 const { Order, OrderItem } = require("../models");
 
+const productService = require("./productService");
+
+
 exports.createOrder = async (data) => {
+
+  let totalPrice = 0;
+
+  const validatedItems = [];
+
+  // checking if it's valid product
+  if (data.items && data.items.length > 0) {
+    for (const item of data.items) {
+
+      const product = await productService.getProductById(item.product_id);
+      if (!product) {
+        throw new Error(`Product ${item.product_id} is not found`);
+      }
+
+      const subtotal =
+        Number(product.price) * item.quantity;
+
+      totalPrice += subtotal;
+
+      validatedItems.push(
+        {
+          product_id: product.id,
+          quantity: item.quantity,
+          price_at_purchase: product.price
+        }
+      )
+    }
+  }
+
+  // create order
   const order = await Order.create({
     order_number: data.order_number,
     customer_id: data.customer_id,
-    total_price: data.total_price,
+    total_price: totalPrice,
     status: data.status,
   });
 
-  if (data.items && data.items.length > 0) {
-    for (const item of data.items) {
-      await OrderItem.create({
-        order_id: order.id,
-        product_id: item.product_id,
-        quantity: item.quantity,
-        price_at_purchase: item.price_at_purchase,
-      });
-    }
+  // create order items
+  for (const item of validatedItems) {
+    await OrderItem.create({
+      order_id: order.id,
+      product_id: item.product_id,
+      quantity: item.quantity,
+      price_at_purchase: item.price_at_purchase,
+    })
   }
 
   return order;

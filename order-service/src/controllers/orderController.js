@@ -9,7 +9,7 @@ exports.create = async (req, res) => {
       data: order,
     });
   } catch (err) {
-    res.status(500).json({
+    res.status(400).json({
       message: err.message,
     });
   }
