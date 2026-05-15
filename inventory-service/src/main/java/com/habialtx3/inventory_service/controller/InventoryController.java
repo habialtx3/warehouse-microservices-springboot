@@ -2,6 +2,7 @@ package com.habialtx3.inventory_service.controller;
 
 import com.habialtx3.inventory_service.model.CreateInventoryRequest;
 import com.habialtx3.inventory_service.model.InventoryResponse;
+import com.habialtx3.inventory_service.model.UpdateInventoryRequest;
 import com.habialtx3.inventory_service.model.WebResponse;
 import com.habialtx3.inventory_service.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +63,18 @@ public class InventoryController {
                 .build();
     }
 
+    @PutMapping(
+            path = "/{inventoryId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<InventoryResponse> update(@RequestBody UpdateInventoryRequest request,
+                                                 @PathVariable String inventoryId) {
+        InventoryResponse response = inventoryService.update(inventoryId,request);
+
+        return WebResponse.<InventoryResponse>builder()
+                .data(response)
+                .build();
+    }
 
 }

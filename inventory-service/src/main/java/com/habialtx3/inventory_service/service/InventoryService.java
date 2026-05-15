@@ -3,6 +3,7 @@ package com.habialtx3.inventory_service.service;
 import com.habialtx3.inventory_service.entity.Inventory;
 import com.habialtx3.inventory_service.model.CreateInventoryRequest;
 import com.habialtx3.inventory_service.model.InventoryResponse;
+import com.habialtx3.inventory_service.model.UpdateInventoryRequest;
 import com.habialtx3.inventory_service.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class InventoryService {
@@ -67,5 +69,28 @@ public class InventoryService {
             );
         }
         return inventories.stream().map(inventory -> toInventoryResponse(inventory)).toList();
+    }
+
+    @Transactional
+    public InventoryResponse update(String id, UpdateInventoryRequest request) {
+        Inventory inventory = inventoryRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory id not found")
+        );
+
+        if (Objects.nonNull(request.getProductId())) {
+            inventory.setProductId(request.getProductId());
+        }
+
+        if (Objects.nonNull(request.getWarehouseLocation())) {
+            inventory.setWarehouseLocation(request.getWarehouseLocation());
+        }
+
+        if (Objects.nonNull(request.getStockQuantity())) {
+            inventory.setStockQuantity(request.getStockQuantity());
+        }
+
+        inventoryRepository.save(inventory);
+
+        return toInventoryResponse(inventory);
     }
 }
