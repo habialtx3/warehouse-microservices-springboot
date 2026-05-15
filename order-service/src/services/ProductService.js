@@ -1,8 +1,10 @@
+const baseUrl = process.env.SPRINGBOOT_URL
+
 exports.getProductById = async (id) => {
   try {
 
     const response = await fetch(
-      `http://localhost:8090/api/products/${id}`
+      `${baseUrl}/api/products/${id}`
     );
 
     if (!response.ok) {
