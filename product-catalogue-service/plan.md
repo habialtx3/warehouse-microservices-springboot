@@ -53,13 +53,12 @@ Struktur Arsitektur Simulasi Kamu
 
 - id (Long, PK)
 - product_id (Long, Indexed)
-- stock_quantity (Integer)
+- stock (Integer)
 - warehouse_location (String)
 
 **Endpoints:**
 
 - `GET /inventory/{productId}` → Cek stok
-- `PUT /inventory/reduce` → Kurangi stok (productId, qty)
 
 ---
 
