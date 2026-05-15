@@ -20,7 +20,6 @@ public class Inventory {
     private String id;
 
     @NotNull
-    @Size(max = 20)
     private String productId;
 
     @NotNull

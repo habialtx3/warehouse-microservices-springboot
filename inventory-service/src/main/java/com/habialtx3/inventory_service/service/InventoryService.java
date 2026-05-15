@@ -1,14 +1,16 @@
 package com.habialtx3.inventory_service.service;
 
+import com.habialtx3.inventory_service.client.ProductClient;
 import com.habialtx3.inventory_service.entity.Inventory;
-import com.habialtx3.inventory_service.model.CreateInventoryRequest;
-import com.habialtx3.inventory_service.model.InventoryResponse;
-import com.habialtx3.inventory_service.model.UpdateInventoryRequest;
+import com.habialtx3.inventory_service.model.*;
 import com.habialtx3.inventory_service.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -21,6 +23,9 @@ public class InventoryService {
     private InventoryRepository inventoryRepository;
 
     @Autowired
+    private ProductClient productClient;
+
+    @Autowired
     private ValidationService validation;
 
     private InventoryResponse toInventoryResponse(Inventory inventory) {
@@ -29,6 +34,8 @@ public class InventoryService {
 
     @Transactional
     public InventoryResponse create(CreateInventoryRequest request) {
+       productClient.getProductById(request.getProductId());
+
         Inventory inventory = new Inventory();
 
         inventory.setProductId(request.getProductId());
