@@ -1,5 +1,6 @@
 package com.habialtx3.inventory_service.service;
 
+import com.habialtx3.inventory_service.client.ProductClient;
 import com.habialtx3.inventory_service.entity.Inventory;
 import com.habialtx3.inventory_service.model.*;
 import com.habialtx3.inventory_service.repository.InventoryRepository;
@@ -22,7 +23,7 @@ public class InventoryService {
     private InventoryRepository inventoryRepository;
 
     @Autowired
-    private RestClient restClient;
+    private ProductClient productClient;
 
     @Autowired
     private ValidationService validation;
@@ -33,30 +34,7 @@ public class InventoryService {
 
     @Transactional
     public InventoryResponse create(CreateInventoryRequest request) {
-        try {
-            WebResponse<ProductResponse> response = restClient.get()
-                    .uri("http://localhost:8080/api/products/{id}", request.getProductId())
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<>(){});
-
-            if (response == null || response.getData() == null) {
-                throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Product not found"
-                );
-            }
-        } catch (HttpClientErrorException.NotFound e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Product not found"
-            );
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Product service not available"
-            );
-        }
-
+       productClient.getProductById(request.getProductId());
 
         Inventory inventory = new Inventory();
 
