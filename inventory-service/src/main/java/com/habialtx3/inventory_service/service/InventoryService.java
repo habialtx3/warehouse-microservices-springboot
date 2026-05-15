@@ -93,4 +93,14 @@ public class InventoryService {
 
         return toInventoryResponse(inventory);
     }
+
+    public void  delete(String id) {
+        Inventory inventory = inventoryRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory id not found")
+        );
+
+        inventoryRepository.delete(inventory);
+
+
+    }
 }

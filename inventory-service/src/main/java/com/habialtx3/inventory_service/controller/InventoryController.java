@@ -74,6 +74,19 @@ public class InventoryController {
 
         return WebResponse.<InventoryResponse>builder()
                 .data(response)
+            .build();
+    }
+
+    @DeleteMapping(
+            path = "/{inventoryId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(@PathVariable String inventoryId) {
+        inventoryService.delete(inventoryId);
+
+        return WebResponse.<String>builder()
+                .data("Inventory has been deleted")
                 .build();
     }
 
