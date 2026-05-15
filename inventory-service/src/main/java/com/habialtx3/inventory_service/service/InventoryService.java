@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class InventoryService {
 
@@ -18,12 +20,7 @@ public class InventoryService {
     private ValidationService validation;
 
     private InventoryResponse toInventoryResponse(Inventory inventory) {
-        return InventoryResponse.builder()
-                .id(inventory.getId())
-                .productId(inventory.getProductId())
-                .stockQuantity(inventory.getStockQuantity())
-                .warehouseLocation(inventory.getWarehouseLocation())
-                .build();
+        return InventoryResponse.builder().id(inventory.getId()).productId(inventory.getProductId()).stockQuantity(inventory.getStockQuantity()).warehouseLocation(inventory.getWarehouseLocation()).build();
     }
 
     @Transactional
@@ -38,4 +35,14 @@ public class InventoryService {
 
         return toInventoryResponse(inventory);
     }
+
+    @Transactional(readOnly = true)
+    public List<InventoryResponse> list() {
+
+        List<Inventory> inventories = inventoryRepository.findAll();
+
+        return inventories.stream().map(inventory -> toInventoryResponse(inventory)).toList();
+    }
+
+    @Transactional(readOnly = true)
 }

@@ -1,5 +1,13 @@
 # 🏗️ Microservices ERP Project Roadmap (Spring Boot)
 
+## Planning
+Struktur Arsitektur Simulasi Kamu
+- Product Spring Boot Master data barang (SKU, Nama, Kategori).
+- Inventory Spring Boot Transaksi stok (In/Out), lokasi rak, opname.
+- Reporting Express.js Dashboard real-time & rekapitulasi data.
+- Procurement/Admin dashboard Laravel Kelola Supplier & pemesanan barang baru.
+- GatewaySpring Cloud Pintu masuk utama (Routing & Auth).
+
 ## 1. Arsitektur Komponen Utama
 
 - **Config Server (Port 8888)**  
