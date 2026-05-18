@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # 1. Database MySQL
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: password 
+    ports:
+      - "3308:3306"
+    networks:
+      - warehouse-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Service Registry (Eureka)
+  service-registry:
+    build: ../../service-registry  # <--- Perhatikan perubahan path ini
+    container_name: service-registry
+    ports:
+      - "8761:8761"
+    networks:
+      - warehouse-network
+
+  # 3. Product Catalogue Service
+  product-catalogue-service:
+    build: ../../product-catalogue-service # <--- Perhatikan perubahan path ini
+    container_name: product-catalogue-service
+    ports:
+      - "8090:8090"
+    depends_on:
+      mysql-db:
+        condition: service_healthy 
+      service-registry:
+        condition: service_started
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/test-warehouse-product-service?createDatabaseIfNotExist=true
+    networks:
+      - warehouse-network
+
+  # 4. Inventory Service
+  inventory-service:
+    build: ../../inventory-service # <--- Perhatikan perubahan path ini
+    container_name: inventory-service
+    ports:
+      - "8081:8081" 
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      service-registry:
+        condition: service_started
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/test-warehouse-inventory-service?createDatabaseIfNotExist=true
+    networks:
+      - warehouse-network
+
+networks:
+  warehouse-network:
+    driver: bridge
