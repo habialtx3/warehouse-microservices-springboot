@@ -60,6 +60,29 @@ services:
     networks:
       - warehouse-network
 
+  # 5. Order Service
+  order-service:
+    build: ../../order-service
+    container_name: order-service
+    ports:
+      - "8092:8092"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      service-registry:
+        condition: service_started
+    environment:
+      - DB_HOST=mysql-db
+      - DB_PORT=3306
+      - DB_NAME=test-warehouse-order-service
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - PORT=8092
+      - PRODUCT_SERVICE_URL=http://product-catalogue-service:8090
+      - INVENTORY_SERVICE_URL=http://inventory-service:8091
+    networks:
+      - warehouse-network
+
 networks:
   warehouse-network:
     driver: bridge
