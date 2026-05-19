@@ -1,6 +1,6 @@
 const { Order, OrderItem } = require("../models");
 
-const productService = require("./productService");
+const productService = require("./ProductService");
 
 
 exports.createOrder = async (data) => {

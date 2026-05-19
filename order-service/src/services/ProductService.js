@@ -1,4 +1,4 @@
-const baseUrl = process.env.SPRINGBOOT_URL
+const baseUrl = process.env.PRODUCT_SERVICE_URL
 
 exports.getProductById = async (id) => {
   try {
