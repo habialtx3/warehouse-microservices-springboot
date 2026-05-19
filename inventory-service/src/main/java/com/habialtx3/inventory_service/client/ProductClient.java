@@ -19,7 +19,7 @@ public class ProductClient {
     public ProductResponse getProductById(String id) {
         try {
             WebResponse<ProductResponse> response = restClient.get()
-                    .uri("http://localhost:8080/api/products/{id}", id)
+                    .uri("http://product-catalogue-service:8090/api/products/{id}", id)
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {
                     });

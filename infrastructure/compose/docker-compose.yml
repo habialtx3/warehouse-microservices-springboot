@@ -48,7 +48,7 @@ services:
     build: ../../inventory-service # <--- Perhatikan perubahan path ini
     container_name: inventory-service
     ports:
-      - "8081:8081" 
+      - "8091:8091" 
     depends_on:
       mysql-db:
         condition: service_healthy
